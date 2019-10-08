@@ -26,10 +26,6 @@ class ArcMenu: UIView {
     private var offsetAngle: CGFloat = 21
     var itemOffset: CGFloat = 40
     
-    //var angleRange: CGFloat = 0
-    
-    //var menuPoint: [CGPoint] = []
-    
     private var panGesture: UIPanGestureRecognizer?
     private var originPoint = CGPoint()
     private var originRotation: CGFloat = 0.0
@@ -45,18 +41,11 @@ class ArcMenu: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
         //super.init(coder: aDecoder)
-
-
     }
     
-    
-
-    
     override func draw(_ rect: CGRect) {
-        //layer.sublayers = nil
-        
         let p1 = CGPoint(x: 0+itemOffset, y: rect.maxY-itemOffset)
-        let p2 = CGPoint(x: rect.maxX * 0.5, y: rect.maxY * 0.5)//-itemOffset*0.5)
+        let p2 = CGPoint(x: rect.maxX * 0.5, y: rect.maxY * 0.5)
         let p3 = CGPoint(x: rect.maxX-itemOffset, y: rect.maxY-itemOffset)
         
         let tmpa1 = p1.x-p2.x
@@ -81,7 +70,6 @@ class ArcMenu: UIView {
         _center = CGPoint(x: x, y: y)
         
         radius = sqrt(pow(_center.x-p2.x,2)+pow(_center.y-p2.y, 2))
-        //print("radius=\(radius)")
         
         let circlePath = UIBezierPath(arcCenter: _center, radius: radius, startAngle: 0, endAngle: .pi * 2, clockwise: false)
         let circleLayer = CAShapeLayer()
@@ -92,27 +80,13 @@ class ArcMenu: UIView {
         circleLayer.lineWidth = 1
         circleLayer.position =  CGPoint(x: _center.x, y: _center.y-rect.maxY*0.5)
         
+        #if DEBUG
         layer.addSublayer(circleLayer)
+        #endif
         
-        
-        //let incp1 = CGPoint(x: p1.x+itemOffset, y: p1.y-itemOffset)
-        //let p1radius = sqrt(pow(_center.x-incp1.x, 2)+pow(_center.y-incp1.y, 2))
-        //print("p1 radius=\(p1radius)")
-        leftAngle = 360 - getAngle(point: p1, center: _center, radius: radius) //- transformToAngle(rotation: itemOffset)
-        //let orgLeftAngle = 360 - getAngle(point: p1, center: _center, radius: radius)
-        //leftAngle = 360 - getAngle(point: incp1, center: _center, radius: p1radius)
-        //let incp3 = CGPoint(x: p3.x-itemOffset, y: p3.y-itemOffset)
-        //let p3radius = sqrt(pow(incp3.x-_center.x, 2)+pow(incp3.y-_center.y, 2))
-        //print("p3 radius=\(p3radius)")
-        rightAngle = getAngle(point: p3, center: _center, radius: radius) + 360 //+ transformToAngle(rotation: itemOffset)
-        //let orgRightAngle = getAngle(point: p3, center: _center, radius: radius) + 360
-        //rightAngle = getAngle(point: incp3, center: _center, radius: p3radius) + 360
-
-        //angleRange = rightAngle - leftAngle
-        offsetAngle = (rightAngle - leftAngle) / 2.5
-        
-        //print("org left angle=\(orgLeftAngle), org right angle=\(orgRightAngle)")
-        //print("left angle=\(leftAngle), right angle=\(rightAngle), offsetAngle=\(offsetAngle)")
+        leftAngle = 360 - getAngle(point: p1, center: _center, radius: radius)
+        rightAngle = getAngle(point: p3, center: _center, radius: radius) + 360
+        offsetAngle = (rightAngle - leftAngle) / 2.5 // 畫面上顯示item的數量
         
         addItemsContainerView()
         addGesture()
@@ -132,9 +106,9 @@ class ArcMenu: UIView {
         if mAngle > 180.0 {
             mAngle = mAngle - 360.0
         }
-        mAngle = mAngle * CGFloat.pi / 180.0 //+ transformToAngle(rotation: itemOffset)
-        let x = center.x + radius * cos(mAngle) //+ itemOffset /// 2
-        let y = center.y + radius * sin(mAngle) //- itemOffset /// 2
+        mAngle = mAngle * CGFloat.pi / 180.0
+        let x = center.x + radius * cos(mAngle)
+        let y = center.y + radius * sin(mAngle)
         return CGPoint(x: x, y: y)
     }
     
@@ -151,11 +125,11 @@ class ArcMenu: UIView {
             item.removeFromSuperview()
         }
 
-        //menuPoint.removeAll()
         menuItems.removeAll()
         
         for i in 0..<items.count {
             let item = items[i]
+            itemOffset = item.bounds.width * 0.5
             let rect = CGRect(x: 0, y: 0, width: itemOffset*2, height: itemOffset*2)
             item.frame = rect
             item.tag = i
@@ -177,26 +151,13 @@ class ArcMenu: UIView {
     }
     
     func setItems() {
-        
         for i in 0..<menuItems.count {
-            lastItemAngle = leftAngle + CGFloat(i) * offsetAngle// - getAngle(angle: itemOffset)
-            //print("itemAngle=\(lastItemAngle)")
-            //let point = getPoint(angle: leftAngle+CGFloat(i)*offsetAngle, center: _center, radius: radius)
+            lastItemAngle = leftAngle + CGFloat(i) * offsetAngle
             let point = getPoint(angle: lastItemAngle, center: _center, radius: radius)
-            //menuPoint.append(point)
-            //print(point)
-            //let rect = CGRect(x: point.x-itemOffset, y: point.y-itemOffset*2, width: itemOffset*2, height: itemOffset*2)
-            
             let item = menuItems[i]
             item.center = point
-            //print(item.frame)
             item.transform = CGAffineTransform(rotationAngle: 0)
         }
-        //print("lastItemAngle=\(lastItemAngle)")
-        //lastItemAngle = leftAngle + CGFloat(menuItems.count-1) * offsetAngle
-        //print("lastItemAngle=\(lastItemAngle)")
-        //print("lastItemAngle=\(lastItemAngle)")
-        //setNeedsLayout()
     }
     
     private func addGesture() {
@@ -240,22 +201,8 @@ class ArcMenu: UIView {
     func placeItems(dX: CGFloat) {
         let value = originRotation + dX
         let angle = getAngle(angle: value)
-        //print("rotationAngle=\(angle)")
-        //let angle = transformToAngle(rotation: value)
-        //print("dxAngle=\(angle), roAngle=\(roAngle)")
-        //let la = leftAngle+roAngle
-        //print("la=\(la)")
-//        if la < leftAngle {
-//            print("out of left")
-//            return
-//        }
-//        if la > rightAngle {
-//            print("out of right")
-//            return
-//        }
         originRotation = value
         
-        //print("originRotation = \(value)")
         itemsContainerView.transform = CGAffineTransform(rotationAngle: angle)
         for item in menuItems {
             item.transform = CGAffineTransform(rotationAngle: -angle)
@@ -263,23 +210,18 @@ class ArcMenu: UIView {
     }
     
     private func springBack() {
-        let angle = leftAngle + transformToAngle(rotation: getAngle(angle:originRotation))
-        let angle1 = lastItemAngle + transformToAngle(rotation: getAngle(angle:originRotation))
-        print("cur angle=\(angle) - \(angle1)")
-        if angle > leftAngle {
-        //if angle > lastItemAngle {
+        let la = leftAngle + transformToAngle(rotation: getAngle(angle:originRotation))
+        let ra = lastItemAngle + transformToAngle(rotation: getAngle(angle:originRotation))
+        if la > leftAngle {
             doSpringbackAnimation(0)
-        //} else if angle > rightAngle-leftAngle {
-        } else if angle1 < lastItemAngle && angle1 < rightAngle {
-       // } else if angle < leftAngle {
-            doSpringbackAnimation(getAngle(angle:rightAngle-lastItemAngle))//-transformToAngle(rotation: itemOffset))
+        } else if ra < lastItemAngle && ra < rightAngle {
+            doSpringbackAnimation(getAngle(angle:rightAngle-lastItemAngle))
         }
 
     }
     
     fileprivate func doSpringbackAnimation(_ value: CGFloat) {
         
-        //print("spring value=\(value)")
         UIView.animate(withDuration: 0.5) {
             self.itemsContainerView.transform = CGAffineTransform(rotationAngle: value)
             
@@ -295,12 +237,9 @@ class ArcMenu: UIView {
     private func addItemsContainerView() {
         itemsContainerView.removeFromSuperview()
 
-        //let height:CGFloat = frame.height * 0.5
         itemsContainerView.frame = CGRect(x: _center.x-radius, y: _center.y-radius, width: radius*2, height: radius*2)
         itemsContainerView.clipsToBounds = false
         itemsContainerView.backgroundColor = UIColor.clear
-        //itemsContainerView.layer.cornerRadius = radius
-        //itemsContainerView.isUserInteractionEnabled = true
         addSubview(itemsContainerView)
         itemsContainerView.bounds = CGRect(x: _center.x-radius, y: _center.y-radius, width: radius*2, height: radius*2)
         print(itemsContainerView.frame)
