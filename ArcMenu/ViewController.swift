@@ -24,13 +24,13 @@ class ViewController: UIViewController {
     }
     
     func configureArcMenu() {
-        let iView1 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "777", content: "可特休", unit: "(天)", color: UIColor.withInt(0, 117, 235))
-        let iView2 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "40.2", content: "可補休", unit: "(時)", color: UIColor.withInt(76, 199, 194))
+        let iView1 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "777", content: "事假", unit: "(天)", color: UIColor.withInt(0, 117, 235))
+        let iView2 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "40.2", content: "加班", unit: "(時)", color: UIColor.withInt(76, 199, 194))
         let iView3 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "88888", content: "累積", unit: "獎金", color: UIColor.withInt(255, 67, 79))
         let iView4 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "66", content: "考績", unit: "分數", color: UIColor.withInt(255, 107, 68))
-        let iView5 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "88", content: "考績", unit: "分數", color: UIColor.withInt(255, 67, 79))
-        let iView6 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "88", content: "考績", unit: "分數", color: UIColor.withInt(255, 67, 79))
-        let iView7 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "88", content: "考績", unit: "分數", color: UIColor.withInt(255, 67, 79))
+        let iView5 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "88", content: "睡眠", unit: "小時", color: UIColor.withInt(255, 67, 79))
+        let iView6 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "77", content: "運動", unit: "分鐘", color: UIColor.withInt(255, 67, 79))
+        let iView7 = MyMenuItem(width: 80, icon: UIImage(named: "my_top_item_bg"), number: "999", content: "消耗", unit: "卡路里", color: UIColor.withInt(255, 67, 79))
 
         let menus:[UIView] = [iView1, iView2, iView3, iView4, iView5, iView6, iView7]
         
